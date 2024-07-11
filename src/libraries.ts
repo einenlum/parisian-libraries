@@ -1,4 +1,6 @@
 import { parse } from 'date-fns';
+import { parse as parseHtml } from 'node-html-parser';
+
 import { request } from './client.js';
 import {
   CleanedOutput as AuthorSearchCleanedOutput,
@@ -145,6 +147,45 @@ function processBookAvailabilityResponse(
       isbn10: fieldList.Isbn10[0],
       libraries: libraries,
     };
+
+  return result;
+}
+
+export async function getLibraryAddress(url: string) {
+  const response = await fetch(url);
+
+  const html = await response.text();
+
+  const root = parseHtml(html);
+
+  const address = root
+    .querySelector('.sidebar-section.is-place')
+    ?.querySelector('.sidebar-section-content');
+
+  if (!address) {
+    return null;
+  }
+
+  return parseAddress(address as unknown as HTMLElement);
+}
+
+function parseAddress(address: HTMLElement) {
+  const childNodes = Array.from(address.childNodes);
+
+  // Initialize an array to store non-strong text parts
+  const textParts = [];
+
+  // Iterate through each child node
+  for (const node of childNodes) {
+    // Check if the node is a text node and its parent is not <strong>
+    // 3 == TEXT_NODE
+    if (node.nodeType === 3 && node.parentNode?.nodeName !== 'STRONG') {
+      textParts.push(node.textContent);
+    }
+  }
+
+  // Join the text parts array into a single string
+  const result = textParts.join('');
 
   return result;
 }
