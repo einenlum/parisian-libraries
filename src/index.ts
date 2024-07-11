@@ -1,3 +1,5 @@
-import searchAuthors from './libraries.js';
+import { searchAuthors, searchBooksFromAuthor } from './libraries.js';
 
-console.log(await searchAuthors('mathieu palain'));
+const results = await searchAuthors('mathieu palain');
+
+console.log(await searchBooksFromAuthor(results[0].id));
