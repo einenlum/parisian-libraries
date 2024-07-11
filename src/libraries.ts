@@ -1,3 +1,4 @@
+import { parse } from 'date-fns';
 import { request } from './client.js';
 import {
   CleanedOutput as AuthorSearchCleanedOutput,
@@ -9,6 +10,11 @@ import {
   Output as BooksFromAuthorOutput,
   CleanedOutput as BooksFromAuthorCleanedOutput,
 } from './types/books_from_author_search.js';
+import {
+  Input as BookAvailabilityInput,
+  Output as BookAvailabilityOutput,
+  CleanedOutput as BookAvailabilityCleanedOutput,
+} from './types/book_availability.js';
 
 export async function searchAuthors(authorName: string) {
   const url =
@@ -70,4 +76,75 @@ export async function searchBooksFromAuthor(authorId: string) {
     pageMax: response.d.SearchInfo.PageMax,
     results: cleanedResults,
   } as BooksFromAuthorCleanedOutput.CleanedSearchBookFromAuthorResponse;
+}
+
+export async function getBookAvailability(bookRscId: string) {
+  const url =
+    'https://bibliotheques.paris.fr/default/Portal/Services/ILSClient.svc/GetHoldings';
+
+  const data = {
+    Record: {
+      RscId: bookRscId,
+      Docbase: 'SYRACUSE',
+    },
+  } as BookAvailabilityInput.BookAvailabilityQuery;
+
+  const response =
+    await request<BookAvailabilityOutput.BookAvailabilityResponse>(
+      'POST',
+      url,
+      data
+    );
+
+  const result = processBookAvailabilityResponse(response.d);
+
+  return result;
+}
+
+function processBookAvailabilityResponse(
+  response: BookAvailabilityOutput.BookAvailabilityResponse
+) {
+  const libraries: BookAvailabilityCleanedOutput.Library[] =
+    response.Holdings.map((holding) => {
+      const name = holding.Other.filter((item) => item.Key === 'SiteLabel')[0]
+        .Value;
+      const url = holding.Other.filter(
+        (item) => item.Key === 'SiteLabelLink'
+      )[0].Value;
+
+      return {
+        cote: holding.Cote,
+        holdingId: holding.HoldingId,
+        isAvailable: holding.IsAvailable,
+        isLoanable: holding.IsLoanable,
+        section: holding.Section,
+        site: holding.Site,
+        statut: holding.Statut,
+        type: holding.Type,
+        whenBack:
+          holding.WhenBack && parse(holding.WhenBack, 'dd/MM/yyyy', new Date()),
+        url: url as string,
+        name: name as string,
+      };
+    });
+
+  const fieldList = response.fieldList;
+
+  const result: BookAvailabilityCleanedOutput.CleanedBookAvailabilityResponse =
+    {
+      identifier: fieldList.Identifier[0],
+      title: fieldList.Title[0],
+      authorName: fieldList.Author_sort[0],
+      yearOfPublication: Number(fieldList.YearOfPublication_sort[0]),
+      isbn: fieldList.Isbn[0],
+      ean: fieldList.Ean[0],
+      typeOfDocument: fieldList.TypeOfDocument[0],
+      thumbnailSmallUrl: fieldList.ThumbSmall[0],
+      thumbnailMediumUrl: fieldList.ThumbMedium[0],
+      thumbnailLargeUrl: fieldList.ThumbLarge[0],
+      isbn10: fieldList.Isbn10[0],
+      libraries: libraries,
+    };
+
+  return result;
 }
