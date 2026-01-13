@@ -1,17 +1,10 @@
-import {
-  getBookAvailability,
-  getLibraryAddress,
+export {
   searchAuthors,
   searchBooksFromAuthor,
+  getBookAvailability,
+  getLibraryAddress,
 } from './libraries.js';
 
-const authors = await searchAuthors('mathieu palain');
-const books = await searchBooksFromAuthor(authors[0].id);
-
-const availability = await getBookAvailability(books.results[0].rscId);
-console.log(availability);
-
-const address = await getLibraryAddress(
-  'https://www.paris.fr/lieux/bibliotheque-assia-djebar-19114'
-);
-console.log(address);
+export type { CleanedOutput as AuthorSearch } from './types/author_search.js';
+export type { CleanedOutput as BooksFromAuthor } from './types/books_from_author_search.js';
+export type { CleanedOutput as BookAvailability } from './types/book_availability.js';

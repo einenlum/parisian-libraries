@@ -1,16 +1,34 @@
 {
   "name": "parisian-libraries",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A TypeScript library for querying the Paris public library system (bibliotheques.paris.fr)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc -w",
-    "test": "NODE_OPTIONS='--experimental-vm-modules' jest"
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
+    "prepublishOnly": "npm run build"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "paris",
+    "library",
+    "libraries",
+    "bibliotheques",
+    "books",
+    "france"
+  ],
+  "author": "Yann Rabiller <contact@einenlum.com>",
   "license": "MIT",
   "devDependencies": {
     "@types/jest": "^30.0.0",

@@ -12,7 +12,7 @@ A TypeScript library for querying the Paris public library system (bibliotheques
 ## Installation
 
 ```bash
-npm install
+npm install parisian-libraries
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ import {
   searchBooksFromAuthor,
   getBookAvailability,
   getLibraryAddress,
-} from './libraries.js';
+} from 'parisian-libraries';
 
 // Search for an author
 const authors = await searchAuthors('mathieu palain');
