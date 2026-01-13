@@ -47,10 +47,8 @@ console.log(availability);
 //   ]
 // }
 
-// Get a library's address
-const address = await getLibraryAddress(
-  'https://www.paris.fr/lieux/bibliotheque-assia-djebar-19114'
-);
+// Get a library's address (using the url from the availability response)
+const address = await getLibraryAddress(availability.libraries[0].url);
 console.log(address);
 // '16 rue de Bagnolet, 75020 Paris'
 ```
