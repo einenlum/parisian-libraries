@@ -66,6 +66,9 @@ npm run dev
 
 # Run the example
 node dist/index.js
+
+# Run tests
+npm test
 ```
 
 ## API Reference
@@ -85,6 +88,14 @@ Check availability of a book across all Paris library branches. Returns book met
 ### `getLibraryAddress(url: string)`
 
 Fetch and parse a library's address from its paris.fr page. Returns the address string or `null` if not found.
+
+## Testing
+
+The project uses Jest with ts-jest for testing. Tests mock HTTP requests to avoid hitting external APIs.
+
+```bash
+npm test
+```
 
 ## License
 
