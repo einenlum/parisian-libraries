@@ -42,7 +42,12 @@ describe('libraries', () => {
         'https://bibliotheques.paris.fr/default/Portal/Search.svc/Suggest',
         expect.objectContaining({
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json, text/plain, */*',
+            'Origin': 'https://bibliotheques.paris.fr',
+            'Referer': 'https://bibliotheques.paris.fr/',
+          },
         })
       );
 
@@ -91,6 +96,7 @@ describe('libraries', () => {
                 Pbls: 'Gallimard',
                 Ttl: 'Les Miserables',
                 RscId: 'rsc-123',
+                RscBase: 'SYRACUSE',
               },
             },
             {
@@ -102,6 +108,19 @@ describe('libraries', () => {
                 Pbls: 'Folio',
                 Ttl: 'Notre-Dame de Paris',
                 RscId: 'rsc-456',
+                RscBase: 'SYRACUSE',
+              },
+            },
+            {
+              FriendlyUrl: '/book/789',
+              Resource: {
+                Crtr: 'Victor Hugo',
+                Desc: 'E-book version',
+                Id: 'book-789',
+                Pbls: 'Digital',
+                Ttl: 'Les Miserables (e-book)',
+                RscId: 'rsc-789',
+                RscBase: 'DILICOM',
               },
             },
           ],
@@ -118,10 +137,16 @@ describe('libraries', () => {
         'https://bibliotheques.paris.fr/Default/Portal/Recherche/Search.svc/Search',
         expect.objectContaining({
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json, text/plain, */*',
+            'Origin': 'https://bibliotheques.paris.fr',
+            'Referer': 'https://bibliotheques.paris.fr/',
+          },
         })
       );
 
+      // DILICOM (e-books) should be filtered out - only physical books returned
       expect(result).toEqual({
         page: 0,
         pageMax: 5,
@@ -133,6 +158,7 @@ describe('libraries', () => {
             id: 'book-123',
             publisher: 'Gallimard',
             rscId: 'rsc-123',
+            docbase: 'SYRACUSE',
           },
           {
             url: '/book/456',
@@ -141,6 +167,7 @@ describe('libraries', () => {
             id: 'book-456',
             publisher: 'Folio',
             rscId: 'rsc-456',
+            docbase: 'SYRACUSE',
           },
         ],
       });
@@ -219,7 +246,12 @@ describe('libraries', () => {
         'https://bibliotheques.paris.fr/default/Portal/Services/ILSClient.svc/GetHoldings',
         expect.objectContaining({
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json, text/plain, */*',
+            'Origin': 'https://bibliotheques.paris.fr',
+            'Referer': 'https://bibliotheques.paris.fr/',
+          },
         })
       );
 

@@ -21,6 +21,7 @@ export namespace Output {
       Pbls: string;
       Ttl: string;
       RscId: string;
+      RscBase: string;
     };
   };
 
@@ -41,6 +42,7 @@ export namespace CleanedOutput {
     id: string;
     publisher: string;
     rscId: string;
+    docbase: string;
   };
 
   export type CleanedSearchBookFromAuthorResponse = {

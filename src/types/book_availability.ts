@@ -2,7 +2,7 @@ export namespace Input {
   export type BookAvailabilityQuery = {
     Record: {
       RscId: string;
-      Docbase: 'SYRACUSE';
+      Docbase: string;
     };
   };
 }
@@ -24,7 +24,7 @@ export namespace Output {
     HoldingId: string;
     IsAvailable: boolean;
     IsLoanable: boolean;
-    Other: KeyValue[];
+    Other: KeyValue[] | null;
     /*
     { Key: 'SiteLabel'; Value: '75001 - La Canopée' },
     { Key: 'Institution'; Value: '' },

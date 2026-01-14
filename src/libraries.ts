@@ -62,7 +62,12 @@ export async function searchBooksFromAuthor(authorId: string) {
 
   const results = response.d.Results;
 
-  const cleanedResults = results.map((result) => {
+  // Exclude digital books (DILICOM = e-books) - this library is for physical books only
+  const physicalResults = results.filter(
+    (result) => result.Resource.RscBase !== 'DILICOM'
+  );
+
+  const cleanedResults = physicalResults.map((result) => {
     return {
       url: result.FriendlyUrl,
       title: result.Resource.Ttl,
@@ -70,6 +75,7 @@ export async function searchBooksFromAuthor(authorId: string) {
       publisher: result.Resource.Pbls,
       id: result.Resource.Id,
       rscId: result.Resource.RscId,
+      docbase: result.Resource.RscBase,
     } as BooksFromAuthorCleanedOutput.BookFromAuthorResultItem;
   });
 
@@ -80,14 +86,14 @@ export async function searchBooksFromAuthor(authorId: string) {
   } as BooksFromAuthorCleanedOutput.CleanedSearchBookFromAuthorResponse;
 }
 
-export async function getBookAvailability(bookRscId: string) {
+export async function getBookAvailability(bookRscId: string, docbase: string = 'SYRACUSE') {
   const url =
     'https://bibliotheques.paris.fr/default/Portal/Services/ILSClient.svc/GetHoldings';
 
   const data = {
     Record: {
       RscId: bookRscId,
-      Docbase: 'SYRACUSE',
+      Docbase: docbase,
     },
   } as BookAvailabilityInput.BookAvailabilityQuery;
 
@@ -107,7 +113,7 @@ function processBookAvailabilityResponse(
   response: BookAvailabilityOutput.BookAvailabilityResponse
 ) {
   const libraries: BookAvailabilityCleanedOutput.Library[] =
-    response.Holdings.map((holding) => {
+    response.Holdings.filter((holding) => holding.Other !== null).map((holding) => {
       const name = holding.Other.filter((item) => item.Key === 'SiteLabel')[0]
         .Value;
       const url = holding.Other.filter(

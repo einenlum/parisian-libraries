@@ -34,7 +34,12 @@ describe('client', () => {
 
       expect(mockFetch).toHaveBeenCalledWith('https://example.com/api', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json, text/plain, */*',
+          'Origin': 'https://bibliotheques.paris.fr',
+          'Referer': 'https://bibliotheques.paris.fr/',
+        },
         body: JSON.stringify({ foo: 'bar' }),
       });
       expect(result).toEqual(mockResponse);
@@ -61,7 +66,12 @@ describe('client', () => {
         'https://example.com/api?foo=bar&baz=qux',
         {
           method: 'GET',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json, text/plain, */*',
+            'Origin': 'https://bibliotheques.paris.fr',
+            'Referer': 'https://bibliotheques.paris.fr/',
+          },
         }
       );
       expect(result).toEqual(mockResponse);

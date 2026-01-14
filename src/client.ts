@@ -9,6 +9,9 @@ export async function request<T>(
     method: method,
     headers: {
       'Content-Type': 'application/json',
+      'Accept': 'application/json, text/plain, */*',
+      'Origin': 'https://bibliotheques.paris.fr',
+      'Referer': 'https://bibliotheques.paris.fr/',
     },
   };
 
@@ -29,6 +32,9 @@ export async function request<T>(
 
 function checkResponse(response: CallResult<any>) {
   if (!response.success) {
-    throw new Error(response.message + ' ' + response.errors.join(', '));
+    const errorDetails = response.errors
+      ?.map(e => typeof e === 'string' ? e : JSON.stringify(e))
+      .join(', ') ?? '';
+    throw new Error(response.message + ' ' + errorDetails);
   }
 }
